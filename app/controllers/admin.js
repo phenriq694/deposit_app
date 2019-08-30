@@ -406,7 +406,7 @@ module.exports.salvar_registro_retirada = function(application, req, res) {
 
     /*
      * Atribuindo os valores retornado no corpo da requisição pelo post para a variável
-     * 'equipamentos'.
+     * 'registro'.
      */
     var registro = req.body 
 
@@ -492,4 +492,159 @@ module.exports.salvar_registro_retirada = function(application, req, res) {
     * Essa função de callback espera dois parâmetros, um erro ou um resultado. 
     */
     equipamentosModel.retirar_equipamento(ativo, function(error, result) {})
+}
+
+/* 
+ * Exportando o módulo como uma função, para que ele já execute os comandos
+ * dentro da função.
+ * As configurações do servidor express é passada por parâmetro. 
+ * Já é carregada na inicilização da aplicação, e executada dentro do método 'POST'
+ * do arquivo 'routes/filtrar_lista.js' quando a rota /filtrar_lista' é chamada.
+ */
+module.exports.exibir_opcoes_filtro = function(application, req, res) {
+
+    /*
+    * Atribuindo a função do módulo 'dbConnection.js' na variável 'connection'.
+    * Essa função só é executada quando esta rota é acessada.
+    */
+   var connection = application.config.dbConnection()
+
+   /*
+   * Atribuindo um nova instância do módulo 'EquipamentosDb' na variável 'equipamentosModel'.
+   * Passamos como parâmetro a conexão com o banco 'connection'.
+   */
+   var equipamentosModel = new application.app.models.EquipamentosDb(connection)
+
+   /*
+   * Utilizando o método 'getEquipamentos' da instância do módulo 'EquipamentosDb' 
+   * atribuido a 'equipamentosModel' para acessar o banco de dados e retornar uma 
+   * resposta para o client.
+   * Passamos como parâmetro a função de callback que retorna a resposta.
+   * Função de callback: o que vai ser feito após a consulta.
+   * Essa função de callback espera dois parâmetros, um erro ou um resultado. 
+   * Esse método (exibir_opcoes_filtro) tem essa função de recurar os dados do banco, pois
+   * utiliza os itens das colunas 'tipo_equipamento', 'marca' e 'modelo' da tabela 'equipamento', 
+   * para pegar todos os itens já cadastrados e listar eles nos '<select>'. 
+   */
+   equipamentosModel.getEquipamentos(function(error, result) {
+
+       /*
+       * Essas funções atribuidas nas variáveis a seguir, retorna uma lista de cada coluna referenciada, 
+       * do banco com os valores filtrados parar ter apenas um exemplo de cada item na listagem nos '<select>'
+       */
+       tipoEquipamento = tipoEquipamentoList(result)
+       marca = marcaList(result)
+       modelo = modeloList(result)
+
+       /*
+       * Além da página que será renderizada também passamos um JSON (filtro)
+       * vazio, pois eles são referênciados dentro do código das páginas e serão utilizados no método
+       * 'filtrar' deste módulo para não dar problema ao carregar a página.
+       * Um outro JSON com todos os registros retornado pelo método 'getEquipamentos' para preencher
+       * a tabela como todos os itens cadastrados na base.
+       * E outros 3 JSONs com os resultados dos filtros de cada coluna referênciada do 
+       * banco para serem adicionadas aos <select>. 
+       */
+       res.render("consultas/filtrar_lista", {
+           filtro : {},
+           listaFiltrada : result,
+           tipoEquipamento : tipoEquipamento, 
+           marca : marca, 
+           modelo : modelo})   
+   })
+}
+
+/* 
+ * Exportando o módulo como uma função, para que ele já execute os comandos
+ * dentro da função.
+ * As configurações do servidor express é passada por parâmetro. 
+ * Já é carregada na inicilização da aplicação, e executada dentro do método 'POST'
+ * do arquivo 'routes/filtrar_lista.js' quando a rota /filtrar_lista/filtro' é chamada.
+ */
+module.exports.filtrar = function(application, req, res) {
+    
+    /*
+     * Atribuindo os valores retornado no corpo da requisição pelo post para a variável
+     * 'filtro'.
+     */
+    var filtro = req.body 
+
+    /*
+    * Atribuindo a função do módulo 'dbConnection.js' na variável 'connection'.
+    * Essa função só é executada quando esta rota é acessada.
+    */
+   var connection = application.config.dbConnection()
+
+   /*
+   * Atribuindo um nova instância do módulo 'EquipamentosDb' na variável 'equipamentosModel'.
+   * Passamos como parâmetro a conexão com o banco 'connection'.
+   */
+   var equipamentosModel = new application.app.models.EquipamentosDb(connection)
+
+   /*
+   * Utilizando o método 'getEquipamentos' da instância do módulo 'EquipamentosDb' 
+   * atribuido a 'equipamentosModel' para acessar o banco de dados e retornar uma 
+   * resposta para o client.
+   * Passamos como parâmetro a função de callback que retorna a resposta.
+   * Função de callback: o que vai ser feito após a consulta.
+   * Essa função de callback espera dois parâmetros, um erro ou um resultado. 
+   * A variável 'filtro' é passada, pois é nela que está os dados passados pelo o usuário através do form. 
+   * Assim podemos comparar com os dados do banco para filtrar a lista. 
+   */
+   equipamentosModel.getEquipamentos(filtro, function(error, result) {
+
+        // Variável que vai armazenar todos os registros da tabela 'equipamento' do banco. 
+        var listaFiltrada = result
+
+        /*
+         * Filtros:
+         * Caso o campo do formulário não esteja vazio (o usuário selecionou um valor), entra na condição e 
+         * compara as informações que o usuário passou com as informações no banco. 
+         * Utilizando o método 'filter' do Array, conseguimos percorrer cada item da variável 'listaFiltrada',
+         * que antes de entrar em qualquer uma das condições abaixo, não esta filtrado ainda. 
+         * Percorrendo cada item dessa variável conseguimos comparar com o valor informado pelo o usuário. 
+         * caso seja igual, esses valores são adicionados na própria variável 'listaFiltrada' e passara pelo
+         * os outros testes, armazenando apenas os valores caso a comparação seja verdadeira. 
+         */
+        if(filtro.ativo != ''){
+            listaFiltrada = listaFiltrada.filter(e => e.ativo == filtro.ativo)
+        }
+
+        if(filtro.tipo_equipamento != ''){
+            listaFiltrada = listaFiltrada.filter(e => e.tipo_equipamento == filtro.tipo_equipamento)
+        }
+
+        if(filtro.marca != ''){
+            listaFiltrada = listaFiltrada.filter(e => e.marca == filtro.marca)
+        }
+
+        if(filtro.modelo != ''){
+            listaFiltrada = listaFiltrada.filter(e => e.modelo == filtro.modelo)
+        }
+
+        /*
+       * Essas funções atribuidas nas variáveis a seguir, retorna uma lista de cada coluna referenciada, 
+       * do banco com os valores filtrados parar ter apenas um exemplo de cada item na listagem nos '<select>'
+       */
+       tipoEquipamento = tipoEquipamentoList(result)
+       marca = marcaList(result)
+       modelo = modeloList(result)
+
+       /*
+       * Além da página que será renderizada também passamos um JSON 'filtro' contendo os valores passados
+       * pelo o usuário quando deu submit no form. Essa variável é utilizada para exibir os campos que o usuário
+       * já preencheu. 
+       * Um outro JSON 'listaFiltrada' com todos os registros filtrados para preencher a tabela com os itens
+       * respeitando o filtro do usuário. 
+       * E outros 3 JSONs com os resultados dos filtros de cada coluna referênciada do 
+       * banco para serem adicionadas aos <select>. 
+       */
+       res.render("consultas/filtrar_lista", {
+           filtro : filtro,
+           listaFiltrada: listaFiltrada,
+           tipoEquipamento : tipoEquipamento, 
+           marca : marca, 
+           modelo : modelo
+        })   
+   })
 }

@@ -11,6 +11,7 @@
  * * controllers.admin.novos_equipamentos_adicionar
  * * controllers.admin.salvar_equipamento_adicionado
  * * controllers.admin.salvar_registro_retirada
+ * * controllers.admin.exibir_opcoes_filtrar
  */
 function Equipamentos(connection) {
     this._connection = connection
