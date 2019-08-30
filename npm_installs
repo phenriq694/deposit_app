@@ -1,0 +1,25 @@
+Módulos instalados 
+
+Para inicializar um projeto nodeJS:
+npm init
+
+Módulo express:
+npm install express --save //--save para salvar o módulo no projeto
+
+Módulo ejs:
+npm install ejs --save
+
+Nodemon:
+npm install -g nodemon
+
+Módulo mysql:
+npm install mysql --save
+
+Módulo Consign:
+npm install consign --save
+
+Módulo Body-Parser:
+npm install body-parser --save
+
+Módulo Express-validator:
+npm install express-validator --save

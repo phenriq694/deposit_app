@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Depósito</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../../bootstrap4/css/bootstrap.min.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    
+    <!-- 
+         Testar alinhamentos
+         justify-content-center
+         justify-contente-end
+    -->
+    <!-- Nav -->
+    <nav class="navbar navbar-expand-sm navbar-dark bg-danger">
+        <a class="navbar-brand">Depósito</a>
+
+        <!-- Menu Hamburguer -->
+            <button class="navbar-toggler" data-toggle="collapse" data-target="#nav-target">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        <!-- /Menu Hamburguer -->
+
+        <!-- Navegação -->
+        <div class="collapse navbar-collapse" id="nav-target">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a href="/deposito_atual" class="nav-link">Depósito Atual</a>
+                </li>
+                <li class="nav-item">
+                  <a href="filtrar_lista" class="nav-link">Filtrar</a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Novos Equipamentos</a>
+                  <div class="dropdown-menu">
+                    <a href="/novos_equipamentos/cadastrar_novo_equipamento" class="dropdown-item">Cadastrar Equipamento</a>
+                    <a href="/novos_equipamentos/adicionar_novo_equipamento" class="dropdown-item">Adicionar Equipamento</a>
+                  </div>
+                </li>
+                <li class="nav-item dropdown">
+                  <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Retirar Equipamento</a>
+                  <div class="dropdown-menu">
+                    <a href="/retirar_equipamento/retirar" class="dropdown-item">Retirar</a>
+                    <a href="/retirar_equipamento/historico_retirada" class="active dropdown-item">Histórico</a>
+                  </div>
+                </li>
+              </ul>
+        </div>
+        <!-- /Navegação -->
+    </nav>
+    <!-- /Nav -->  
+
+    <!-- form filtro-->
+
+    <!-- Div - Tabela -->
+    <div class="table-responsive">
+        <!-- Table -->
+        <table class="table">
+
+          <thead>
+            <tr>
+              <th>Ativo</th>
+              <th>Departamento</th>
+              <th>Usuário</th>
+              <th>Observação</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% for(var i = 0; i < historico.length; i++) { %>
+              <tr>
+                <td><%= historico[i].ativo %></td>
+                <td><%= historico[i].departamento %></td>
+                <td><%= historico[i].usuario %></td>
+                <td><%= historico[i].observacao %></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <!-- /Table -->
+      </div>
+    <!-- /Div - Tabela -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../../bootstrap4/js/bootstrap.min.js"></script>
+  </body>
+</html>

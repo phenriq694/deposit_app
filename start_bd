@@ -1,0 +1,7 @@
+Inicialização do banco de dados:
+
+mysql -u root -p
+
+Caso os dados não estejam sendo exibidos na aplicação, rodar este comando no banco:
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Paulo666';
+
